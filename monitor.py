@@ -27,16 +27,18 @@ def blink_alert(duration=6):
         sleep(1)
 
 def alert_if_critical(vitals_status):
-    if not vitals_status["temperature"]:
-        print("Temperature critical!")
-        blink_alert()
-    if not vitals_status["pulse"]:
-        print("Pulse Rate is out of range!")
-        blink_alert()
-    if not vitals_status["spo2"]:
-        print("Oxygen Saturation out of range!")
-        blink_alert()
-    return all(vitals_status.values())
+    alerts = {
+        "temperature": "Temperature critical!",
+        "pulse": "Pulse Rate is out of range!",
+        "spo2": "Oxygen Saturation out of range!"
+    }
+    any_alert = False
+    for vital, alert_msg in alerts.items():
+        if not vitals_status[vital]:
+            print(alert_msg)
+            blink_alert()
+            any_alert = True
+    return not any_alert
 
 def vitals_ok(temperature, pulseRate, spo2):
     vitals_status = vitals_check(temperature, pulseRate, spo2)

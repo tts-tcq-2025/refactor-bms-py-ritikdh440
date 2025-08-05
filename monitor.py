@@ -1,37 +1,35 @@
+""" Feedback by Mentor
 
-from time import sleep
-import sys
+1. Use a single data structure per vital: name, value, min, max
+2. Pass a list of such vital dictionaries to vitals_ok()
+
+3. Ensure alert_if_critical handles one key, one object, one structure at a time
+
+4. Keep print logic in a separate printer.py file and inject via arguments
+
+5. Maintain key ordering in messages: name, value, range (for clarity and consistency)
+
+"""
+from alerts import blink_alert
+from printer import default_printer
+
+def is_value_in_range(vital):
+    return vital["min"] <= vital["value"] <= vital["max"]
+
+def alert_if_critical(vitals, printer=default_printer, blinker=blink_alert):
+    any_alert = False
+    for vital in vitals:
+        if not is_value_in_range(vital):
+            message = (
+                f"{vital['name']} out of range! "
+                f"Value: {vital['value']} (Expected: {vital['min']} to {vital['max']})"
+            )
+            printer(message)
+            blinker()
+            any_alert = True
+    return not any_alert
+
+def vitals_ok(vitals, printer=default_printer, blinker=blink_alert):
+    return alert_if_critical(vitals, printer, blinker)
 
 
-def vitals_ok(temperature, pulseRate, spo2):
-  if temperature > 102 or temperature < 95:
-    print('Temperature critical!')
-    for i in range(6):
-      print('\r* ', end='')
-      sys.stdout.flush()
-      sleep(1)
-      print('\r *', end='')
-      sys.stdout.flush()
-      sleep(1)
-    return False
-  elif pulseRate < 60 or pulseRate > 100:
-    print('Pulse Rate is out of range!')
-    for i in range(6):
-      print('\r* ', end='')
-      sys.stdout.flush()
-      sleep(1)
-      print('\r *', end='')
-      sys.stdout.flush()
-      sleep(1)
-    return False
-  elif spo2 < 90:
-    print('Oxygen Saturation out of range!')
-    for i in range(6):
-      print('\r* ', end='')
-      sys.stdout.flush()
-      sleep(1)
-      print('\r *', end='')
-      sys.stdout.flush()
-      sleep(1)
-    return False
-  return True

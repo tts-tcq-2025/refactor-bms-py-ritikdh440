@@ -1,45 +1,35 @@
-from time import sleep
-import sys
+""" Feedback by Mentor
 
-def is_temperature_ok(temp):
-    return 95 <= temp <= 102
+1. Use a single data structure per vital: name, value, min, max
+2. Pass a list of such vital dictionaries to vitals_ok()
 
-def is_pulse_ok(pulse):
-    return 60 <= pulse <= 100
+3. Ensure alert_if_critical handles one key, one object, one structure at a time
 
-def is_spo2_ok(spo2):
-    return spo2 >= 90
+4. Keep print logic in a separate printer.py file and inject via arguments
 
-def vitals_check(temperature, pulseRate, spo2):
-    return {
-        "temperature": is_temperature_ok(temperature),
-        "pulse": is_pulse_ok(pulseRate),
-        "spo2": is_spo2_ok(spo2)
-    }
+5. Maintain key ordering in messages: name, value, range (for clarity and consistency)
 
-def blink_alert(duration=6):
-    for _ in range(duration):
-        print('\r* ', end='')
-        sys.stdout.flush()
-        sleep(1)
-        print('\r *', end='')
-        sys.stdout.flush()
-        sleep(1)
+"""
+from alerts import blink_alert
+from printer import default_printer
 
-def alert_if_critical(vitals_status):
-    alerts = {
-        "temperature": "Temperature critical!",
-        "pulse": "Pulse Rate is out of range!",
-        "spo2": "Oxygen Saturation out of range!"
-    }
+def is_value_in_range(vital):
+    return vital["min"] <= vital["value"] <= vital["max"]
+
+def alert_if_critical(vitals, printer=default_printer, blinker=blink_alert):
     any_alert = False
-    for vital, alert_msg in alerts.items():
-        if not vitals_status[vital]:
-            print(alert_msg)
-            blink_alert()
+    for vital in vitals:
+        if not is_value_in_range(vital):
+            message = (
+                f"{vital['name']} out of range! "
+                f"Value: {vital['value']} (Expected: {vital['min']} to {vital['max']})"
+            )
+            printer(message)
+            blinker()
             any_alert = True
     return not any_alert
 
-def vitals_ok(temperature, pulseRate, spo2):
-    vitals_status = vitals_check(temperature, pulseRate, spo2)
-    return alert_if_critical(vitals_status)
+def vitals_ok(vitals, printer=default_printer, blinker=blink_alert):
+    return alert_if_critical(vitals, printer, blinker)
+
+

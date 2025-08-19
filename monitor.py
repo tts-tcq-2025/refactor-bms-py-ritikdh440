@@ -85,8 +85,4 @@ def alert_if_critical(vitals, printer=default_printer, blinker=blink_alert):
 
 
 def vitals_ok(vitals, printer=default_printer, blinker=blink_alert):
-    """
-    Entry point: Check if all vitals are OK.
-    Uses alert_if_critical under the hood.
-    """
     return alert_if_critical(vitals, printer, blinker)

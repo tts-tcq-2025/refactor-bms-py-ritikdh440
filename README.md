@@ -1,4 +1,23 @@
-# Programming Paradigms
+# Vital Monitor Extension
+
+## Implemented Extension
+**Extension 1 – Early Warning**
+
+## What Changed
+- Added a tolerance band = 1.5% of each vital’s max value.
+- Classification now distinguishes:
+  - **LOW / HIGH** → critical breach → print + blink → `vitals_ok = False`
+  - **WARN_LOW / WARN_HIGH** → warning band → print only → `vitals_ok = True`
+  - **OK** → silent
+- Messages preserve order: `name`, `value`, `range`, then status text.
+
+## Example Messages
+- `temperature Value: 95.5 (Expected: 95 to 102) → Approaching low`
+- `temperature Value: 101.0 (Expected: 95 to 102) → Approaching high`
+- `temperature Value: 102.1 (Expected: 95 to 102) → CRITICAL HIGH!`
+
+
+<!-- # Programming Paradigms
 
 Health Monitoring Systems
 
@@ -46,3 +65,4 @@ Shorten the Semantic distance
 - Functional to express relation between input and output
 - Object oriented to encapsulate state with actions
 - Aspect oriented to capture repeating aspects
+ -->
